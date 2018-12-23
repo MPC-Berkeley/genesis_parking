@@ -1,0 +1,14 @@
+<launch>
+    <!-- global configuration -->
+    <rosparam command="load" file="$(find genesis_parking)/config/parking.yaml" />
+
+    <!-- path planner and controller -->
+    <node pkg="genesis_parking" type="parking_mpc.jl" name="mpc" output="screen" />  
+
+    <!-- state estimate -->
+    <node pkg="genesis_parking" type="state_simulator.py" name="state_simulator" output="screen" />
+
+    <!-- simulation -->
+    <node pkg="genesis_parking" type="simulator.py" name="parking_sim" output="screen" /> 
+    
+</launch>

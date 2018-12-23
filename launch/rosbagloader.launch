@@ -1,0 +1,5 @@
+<launch>
+    <!-- simulation -->
+    <node pkg="genesis_parking" type="rosbagloader.py" name="rosbagloader" output="screen" /> 
+    
+</launch>

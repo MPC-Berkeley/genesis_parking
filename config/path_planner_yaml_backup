@@ -1,0 +1,30 @@
+# state vector  [x  y  psi  v]
+# (x,y) := coordinates in the global frame
+# psi   := heading angle with respect to the x-axis
+# v     := velocity
+
+# vehicle parameters
+length_front: 1.521         # distance from center of gravity to front axel
+length_rear: 1.498          # distance from center of gravity to rear axel
+width:  1.89
+width_margin: 0.25 #1
+length_front_margin: 3.0
+length_rear_margin: 0.3
+
+# system model parameter(s)
+time_step: 0.1
+
+# output html file using Google Maps
+plot_gps: False
+
+# parking lot area 
+# 1 -> parking lot in front of California PATH building
+# 2 -> parking lot next to of Network for Earthquake Engineering Simulation (NEES) building
+parking_lot: 1
+
+# parking lot 1 (in front of California PATH)
+# Seaver and 46th street, points (latitute, longitude)
+b1_1:   [37.917836, -122.331680]   # left hand boundary (bottom)
+b1_2:   [37.918250, -122.331369]   # left hand boundary (top)
+b1_3:   [37.917806, -122.331605]   # right hand boundary (bottom)
+b1_4:   [37.918261, -122.331255]   # right hand boundary (top)
