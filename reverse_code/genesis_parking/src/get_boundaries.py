@@ -84,8 +84,8 @@ def main():
     lat_ref, lng_ref    = (0.0, 0.0)
     
     offset				= (length_front_bumber + Lr)/2 - Lr # from center of the parking spot to center of mass for final position
-    #yawF				= 1.1888903267948967 # hardcoded orientation for final position
-    yawF				= 1.2328743267948965
+
+    yawF				= 1.2328743267948965 # hardcoded orientation for final position
     
     # converting google map reference point to the same reference point measured by dGPS
     offsetX				= -offset*cos(yawF)

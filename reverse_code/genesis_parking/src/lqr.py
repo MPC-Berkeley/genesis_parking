@@ -19,14 +19,15 @@ class LQR():
 
 	def __init__(self):
 
-		self.sCurr = None
-		self.gear = 1
-		self.gear_flag = False
-		self.gear_msg = None
-		self.real_car = True
-		
-	
+		# set up data
 
+		self.sCurr = None
+		self.gear = 1 			# 1 for forward, 14 for reverse
+		self.gear_flag = False	# whether or not gear needs to be changed
+		self.gear_msg = None 	# msg for gear change
+		self.real_car = True	# simulation or real car
+		
+		# set up geometry
 		self.rospack     	= rospkg.RosPack()
 		self.Lf				= 1.521
 		self.Lr				= 1.498
@@ -36,8 +37,6 @@ class LQR():
 
 		self.path_dict = h5py.File(self.base + self.jld_file, 'r')
 		
-
-		# Set up Data 
 		# state: x, y, psi, v
 		# input: theta, a
 		self.s_global_traj = self.path_dict['sp10Ref'].value
@@ -50,6 +49,8 @@ class LQR():
 		self.theta_global_traj = self.path_dict['up10Ref'].value[:,0]
 		self.acc_global_traj = self.path_dict['up10Ref'].value[:,1]
 
+
+		# parse the path into different segments
 		self.reverse_step = [0]
 		
 		for index in range(len(self.v_global_traj)-1):
@@ -59,7 +60,7 @@ class LQR():
 		self.reverse_step.append(-1)
 		
 		
-		
+		# set up ros nodes
 		rospy.init_node('LQR_controller', anonymous=True)
 		self.state_sub = rospy.Subscriber('state_estimate', state_est, self.x_update, queue_size=1)
 		self.gear_sub		= rospy.Subscriber('/vehicle/gear', UInt8, self.gear_update, queue_size=1)
@@ -75,7 +76,8 @@ class LQR():
 	
 		self.r = rospy.Rate(int(1/self.ts))
 		
-		
+		# lqr weights
+
 		Q_f = np.matrix([ \
 		[35.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], \
 		[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], \
@@ -116,8 +118,11 @@ class LQR():
 		[0.0, 0.0, 0.0, 0.0, 1.0]])
 		R_b_decoupled = np.matrix([[500.0]])
 		
+		# tolerance for final state
+
 		tol = (0.20, 0.20, 0.15)
 		
+		# for each segment of the path, set up correct weights and gear, then call the lqr controller 
 		for index in range(len(self.reverse_step)-1):
 			self.final_distance = 100 # placeholder (will be recalculated later)
 			self.xref_temp = self.s_global_traj[self.reverse_step[index]:self.reverse_step[index+1], :]
@@ -145,8 +150,7 @@ class LQR():
 				else:
 					self.gear_flag = False
 					self.gear_msg = 1
-				
-			#if index < len(self.reverse_step)-2:
+			
 			self.gear_flag_pub.publish(self.gear_flag)
 			if self.gear_flag == False:
 				print("Please shift gear")
@@ -350,22 +354,17 @@ class LQR():
 			# Decoupled
 			eyCurr = self.calculate_nominal_distance(current, xLocalRef)
 			epsiCurr = current[2] - xLocalRef[2]
-			
 			xDecoupledCurrent = np.matrix([[eyCurr], [(eyCurr-p_ey)/self.ts], [epsiCurr], [(epsiCurr-p_epsi)/self.ts], [p_u_decoupled]])
 			u_dot_decoupled_ref = uref[index,0] - u_decoupled_ref_previous
 			uDecoupledRef = np.matrix(u_dot_decoupled_ref)
-			
 			A_decoupled = self.calculate_decoupled_A()
 			B_decoupled = self.calculate_decoupled_B()
-			
 			P_decoupled = self.solve_dare(A_decoupled, B_decoupled, Q_decoupled, R_decoupled)
 			K_decoupled = np.matrix(la.inv(B_decoupled.T * P_decoupled * B_decoupled + R_decoupled) * (B_decoupled.T * P_decoupled * A_decoupled))
-			
 			u_dot_decoupled = np.matrix(uDecoupledRef).T - K_decoupled * np.matrix(xDecoupledCurrent)
 			
 			u_decoupled = p_u_decoupled + self.mod2pi(u_dot_decoupled)
 			
-			#print("udot :" + str(round(self.mod2pi(u_dot_decoupled), 4)))
 			print("ey :" + str(eyCurr))
 			print(self.final_distance)
 			
@@ -384,11 +383,11 @@ class LQR():
 				if round(self.modpi(u_decoupled),4) > 0.45:
 					self.steer_pub.publish(0.45)
 					p_u_decoupled = 0.45
-					print("SuperSteering: " + str(0.45))
+					print("Steering: " + str(0.45))
 				elif round(self.modpi(u_decoupled),4) < -0.45:
 					self.steer_pub.publish(-0.45)
 					p_u_decoupled = -0.45
-					print("SuperSteering: " + str(-0.45))
+					print("Steering: " + str(-0.45))
 				else:
 					self.steer_pub.publish(self.modpi(u_decoupled))
 					p_u_decoupled = self.modpi(u_decoupled)
@@ -397,22 +396,8 @@ class LQR():
 			elif self.gear == 14:
 				if self.real_car == True:
 					'''
-					if (round(xLocalRef[3]-s_ref_previous[3],4)) < 0 and round(current[3]-s_previous[3],4) <= (round(xLocalRef[3]-s_ref_previous[3],4)):											# for real car
-						self.acc_enable_pub.publish(1)							# for real car
-						#self.acc_pub.publish(4.0*(current[3]-xLocalRef[3]))	# for real car
-						self.acc_pub.publish(-0.8)
-						print("Acc: " + str(-0.8))
+					the user controls longitudinal accelaeration in reverse gear
 					
-					elif (round(xLocalRef[3]-s_ref_previous[3],4)) > 0 and round(current[3]-s_previous[3],4) <= 0.8*(round(xLocalRef[3]-s_ref_previous[3],4)):
-						self.acc_enable_pub.publish(1)						# for real car
-						self.acc_pub.publish(-0.8)
-						#self.acc_pub.publish(-12.0*abs(current[3]-xLocalRef[3]))
-						print("Acc: " + str(-12.0*abs(current[3]-xLocalRef[3])))
-						#self.acc_pub.publish(-10.5)
-				
-					else:													# for real car
-						self.acc_pub.publish(1.0)							# for real car
-						print("Acc: " + str(1.0))
 					'''
 				else:
 				
@@ -429,11 +414,11 @@ class LQR():
 				if round(self.modpi(u_decoupled),4) > 0.45:
 					self.steer_pub.publish(0.45)
 					p_u_decoupled = 0.45
-					print("SuperSteering: " + str(0.45))
+					print("Steering: " + str(0.45))
 				elif round(self.modpi(u_decoupled),4) < -0.45:
 					self.steer_pub.publish(-0.45)
 					p_u_decoupled = -0.45
-					print("SuperSteering: " + str(-0.45))
+					print("Steering: " + str(-0.45))
 				else:
 					self.steer_pub.publish(self.modpi(u_decoupled))
 					p_u_decoupled = self.modpi(u_decoupled)

@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 import rospy
-#import scipy.io as sio
-#from gmplot import gmplot
 import numpy as np
 import operator
 import pdb
@@ -62,11 +60,11 @@ def main():
     rospy.init_node("boundary_generator", anonymous=True)
 
     # get parameters
-    Lf          = rospy.get_param("/length_front")                  # center of mass to front axle
-    Lr          = rospy.get_param("/length_rear")                   # center of mass to rear axle
-    w           = rospy.get_param("/width")                         # width of the car
-    length_front_bumber   = rospy.get_param("/length_front_bumber") # center of mass to front bumber
-    length_rear_bumber   = rospy.get_param("/length_rear_bumber")   # center of mass to rear bumber
+    length_front 			= rospy.get_param("/length_front")                  # center of mass to front axle
+    Lr          			= rospy.get_param("/length_rear")                   # center of mass to rear axle
+    w           			= rospy.get_param("/width")                         # width of the car
+    length_front_bumber 	= rospy.get_param("/length_front_bumber") 			# center of mass to front bumber
+    length_rear_bumber 		= rospy.get_param("/length_rear_bumber") 			# center of mass to rear bumber
 
     # setting up parking spot information
     select      = rospy.get_param("/parking_lot")
@@ -84,8 +82,8 @@ def main():
     lat_ref, lng_ref    = (0.0, 0.0)
     
     offset				= (length_front_bumber + Lr)/2 - Lr # from center of the parking spot to center of mass for final position
-    yawRef				= 1.2328743267948965
-    yawF				= 1.2328743267948965-pi/2 # hardcoded orientation for final position
+    yawRef				= 1.2328743267948965				# reference for offset calculation
+    yawF				= 1.2328743267948965-pi/2 			# hardcoded orientation for final position
     
     # converting google map reference point to the same reference point measured by dGPS
     offsetX				= -offset*cos(yawRef)

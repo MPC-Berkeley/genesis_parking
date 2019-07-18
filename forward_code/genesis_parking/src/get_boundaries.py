@@ -76,8 +76,7 @@ def main():
     lat_ref, lng_ref    = (0.0, 0.0)
     
     offset				= (length_front_bumber + Lr)/2 - Lr
-    #yawF				= 1.1888903267948967
-    yawF				= 1.2328743267948965
+    yawF				= 1.2328743267948965 # hardcoded final orientation
     
     offsetX				= -offset*cos(yawF)
     offsetY				= -offset*sin(yawF)
@@ -137,7 +136,6 @@ def main():
     (x0,y0)             = coord_sys.get_XY(lat0, lng0)
     (xRf, yRf)			= coord_sys.get_XY(gps_fr[0], gps_fr[1])
     (xRr, yRr)			= coord_sys.get_XY(gps_rr[0], gps_rr[1])
-    # yawF 				= np.arctan2((yRf - yRr), (xRf - xRr))
     yawF				= 1.2328743267948965
     xF					= -(Lr+offset)*cos(yawF)
     yF					= -(Lr+offset)*sin(yawF)

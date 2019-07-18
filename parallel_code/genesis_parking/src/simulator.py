@@ -115,7 +115,7 @@ class PlotGPSTrajectory():
 		l11, = self.sub2.plot(self.s_curr, self.steering_angle, 'ro')
 
 		self.sub1.set_xlabel('X (m)'); self.sub1.set_ylabel('Y (m)')
-		self.sub2.set_xlabel('s (m)'); self.sub2.set_ylabel('v (m/s)')
+		self.sub2.set_xlabel('s (m)'); self.sub2.set_ylabel('psi')
 		self.l_arr = [l1,l3,l5,l6,l7,l8,l9,l10,l11]
 		#self.sub1.axis('equal')
 

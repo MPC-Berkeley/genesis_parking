@@ -51,9 +51,6 @@ function update_state(msg::state_est,
     idx 		= indmin(ds)
     
 
-    #delD  	   = euclideanDistance(sCurr, sPrev)
-    #dist[:]    = dist[1] + delD
-    #idx 	   = indmin( (dp10Ref - dist[1]).^2 )
 
 	sRef[:,:] = copy( sp10Ref[:,idx:idx+N] )
 	uRef[:,:] = copy( up10Ref[:,idx:idx+N-1] )
