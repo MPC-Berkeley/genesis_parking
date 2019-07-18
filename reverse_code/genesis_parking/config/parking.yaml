@@ -1,0 +1,11 @@
+# mpc parameters
+horizon_preview: 15
+state_penalty_matrix:   [9.0,  0.0,  0.0,  0.0,  #x coordinate penalty 9; 
+                         0.0,  9.0,  0.0,  0.0,  #y coordinate penalty 9; 
+                         0.0,  0.0,  7.0,  0.0,  #heading angle penalty 7; 
+                         0.0,  0.0,  0.0,  0.0]  #velocity penalty 0; 
+
+input_penalty_matrix:   [0.0,  0.0,  #steering angle penalty 0; 
+                         0.0,  0.0]  #acceleration penalty 0; 
+dgps_global_offset: [0, 0] # x_offset, y_offset in m (from base station)
+gps_to_rear_axle_dist: 1.498     # mounting offset in m (assume aligned laterally)

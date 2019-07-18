@@ -1,0 +1,7 @@
+https://drive.google.com/open?id=17_SFX5w_CfvURIU9r7Q_auZ0LIbKy7va&usp=sharing
+
+This map contains the points used to construct the parking lot.
+
+In particular, you can ID the spot # (1 is the spot closest to Seaver Ave, 17 is the one farthest away).
+
+We can support spots 2 - 15 at the moment, you just need to modify path_planner.yaml.

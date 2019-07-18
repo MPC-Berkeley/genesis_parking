@@ -1,0 +1,92 @@
+# state vector  [x  y  yaw  v]
+# (x,y) := coordinates in the global frame
+# psi   := heading angle with respect to the x-axis
+# v     := velocity
+
+# vehicle parameters
+length_front: 1.521         # distance from center of gravity to front axel
+length_rear: 1.498          # distance from center of gravity to rear axel
+length_front_bumber: 2.366          # distance from center of gravity to front bumber
+length_rear_bumber: 2.633          # distance from center of gravity to rear bumber
+width:  1.89
+
+# varibles below are not in use
+width_margin: 0.25 
+length_front_margin: 3.0
+length_rear_margin: 0.3
+length_rear_axle_to_bumper: 4.0
+
+# system model parameter(s)
+time_step: 0.01
+
+# output html file using Google Maps
+plot_gps: False
+
+# parking lot area 
+# 1 -> parking lot in front of California PATH building
+# 2 -> parking lot next to of Network for Earthquake Engineering Simulation (NEES) building
+parking_lot: 1
+
+# parking lot 1 (in front of California PATH)
+# Seaver and 46th street, points (latitute, longitude)
+b1_1:   [37.916830, -122.331711]   # left hand boundary (bottom)
+b1_2:   [37.916922, -122.332031]   # left hand boundary (top)
+b1_3:   [37.916905, -122.331681]   # right hand boundary (bottom)
+b1_4:   [37.916992, -122.331994]   # right hand boundary (top)
+
+GPS_com2:   [37.91694499448355, -122.33176756133896]   # Center of mass measured by dGPS at a fixed reference point
+GM_ref2:   [37.91694975, -122.33177275]   # reference point on Google map, will be converted to the same reference point later
+
+spot_margin: 0   # use when the spot is too narrow and needs to be widened for planning and tracking
+spot_buffer: 0.1   # use when the spot is too short and the final position needs to be set back for planning and tracking
+
+
+# Roughly, the entrance to parking lot 1
+lng0: -122.3315916
+lat0: 37.9178753
+yaw0: 1.0
+
+desired_spot: spot_6
+# planner only works for spot 4, 5, 6, 7, 8 due to the size of the parking lot
+
+spot_1:
+      right_front: [37.917002, -122.331888]
+      right_back: [37.916968, -122.331905]
+      left_front: [37.917011, -122.331916]
+      left_back: [37.916974, -122.331933]
+spot_2:
+      right_front: [37.916995, -122.331861]
+      right_back: [37.916960, -122.331877]
+      left_front: [37.917002, -122.331888]
+      left_back: [37.916968, -122.331905]
+spot_3:
+      right_front: [37.916986, -122.331832]
+      right_back: [37.916953, -122.331851]
+      left_front: [37.916995, -122.331861]
+      left_back: [37.916960, -122.331877]
+spot_4:
+      right_front: [37.916979, -122.331806]
+      right_back: [37.916944, -122.331823]
+      left_front: [37.916986, -122.331832]
+      left_back: [37.916953, -122.331851]
+spot_5:
+      right_front: [37.916970, -122.331778]
+      right_back: [37.916936, -122.331796]
+      left_front: [37.916979, -122.331806]
+      left_back: [37.916944, -122.331823]
+spot_6:
+      right_front: [37.916963, -122.331750]
+      right_back: [37.916930, -122.331767]
+      left_front: [37.916970, -122.331778]
+      left_back: [37.916936, -122.331796]
+spot_7:
+      right_front: [37.916955, -122.331723]
+      right_back: [37.916921, -122.331740]
+      left_front: [37.916963, -122.331750]
+      left_back: [37.916930, -122.331767]
+spot_8:
+      right_front: [37.916948, -122.331692]
+      right_back: [37.916914, -122.331710] 
+      left_front: [37.916955, -122.331723]
+      left_back: [37.916921, -122.331740]
+

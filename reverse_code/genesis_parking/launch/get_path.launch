@@ -1,0 +1,4 @@
+<launch>
+    <!-- path planner and controller -->
+    <node pkg="genesis_parking" type="get_path.jl" name="path_generation" output="screen" />  
+</launch>

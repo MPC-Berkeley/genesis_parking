@@ -1,0 +1,9 @@
+<launch>
+    <arg name="type" />
+	<rosparam command="load" file="$(find genesis_parking)/config/parking.yaml" />
+
+    <node pkg="genesis_parking" type="get_position.py" name="get_position">
+        <param name="type" value="$(arg type)" />
+    </node>
+
+</launch>

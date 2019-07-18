@@ -1,0 +1,7 @@
+<launch>
+    <!-- global configuration -->
+    <rosparam command="load" file="$(find genesis_parking)/config/path_planner.yaml" />
+
+    <!-- path planner and controller -->
+    <node pkg="genesis_parking" type="get_boundaries.py" name="boundary_generation" output="screen" />  
+</launch>
